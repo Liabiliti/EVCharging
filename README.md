@@ -13,3 +13,9 @@ The end solution was able to solve the below problems:
   - Find a path which allows the car to charge multiple times at different stations.
 
 This project could be improved by using a more efficient algorithm for the cheapest path.
+
+To run the file you can use a chosen IDE and compile via the IDE, additionally if the computer has a c++ compiler installed, then running these commands in the correct directory:
+
+1. [compiler] EVChargingApp.cpp - o EVChargingApp
+2. ./EVChargingApp
+Will compile and run the program.
