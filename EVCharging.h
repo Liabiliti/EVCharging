@@ -419,9 +419,13 @@ double EVCharging::costOfPath(vector<int> path, int chargingAmount, int flag)
 		{
 			if (locations[path[j]].chargingPrice == 0)
 			{
+				if (flag == 1)
+				{
+					cout << locations[path[j]].locationName << endl;
+				}
 				chargingLeft -= 25;
 			}
-			if (locations[path[j]].chargingPrice < cheapest)
+			else if (locations[path[j]].chargingPrice < cheapest)
 			{
 				cheapest = locations[path[j]].chargingPrice;
 			}
@@ -429,6 +433,8 @@ double EVCharging::costOfPath(vector<int> path, int chargingAmount, int flag)
 
 		distance += graph->getWeight(path[j], path[j+1]);
 	}
+	if(chargingLeft < 0)
+			chargingLeft = 0;
 	if (flag == 1)
 	{
 		cout << "Travel cost = " << (distance * 0.10) << endl
@@ -440,9 +446,6 @@ double EVCharging::costOfPath(vector<int> path, int chargingAmount, int flag)
 			cout << ", " << locations[path[i]].locationName;
 		}
 	}
-
-	if (chargingLeft < 0)
-		chargingLeft = 0;
 	return (distance * 0.10) + (chargingLeft * cheapest);
 }
 
