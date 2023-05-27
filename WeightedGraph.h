@@ -20,20 +20,16 @@ class WeightedGraphType
 {
 protected:
 	int gSize;		  // number of vertices
-	//list<int> *graph; // Store adjacency list
-	//double **weights; // Store weights of edges
 	vector<vector<double> > weight;
 	vector<vector<int> > graphs;
 public:
 	WeightedGraphType(int size = 0);
-	~WeightedGraphType();
 	double getWeight(int i, int j)
 	{
 		return weight[i][j];
 	}
 	void printAdjacencyList();
 	void printAdjacencyMatrix();
-	//list<int> breadthFirstTraversal(int key);
 	vector<vector<double> > shortestPath(int vertex);
 	double cheapestPath(int vertex, int destination);
 };
@@ -60,12 +56,6 @@ WeightedGraphType::WeightedGraphType(int size)
 		graphs[i].assign(gSize, 0);
 		weight[i].assign(gSize, 0);
 	}
-	//graph = new list<int>[gSize]; /*
-
-	//weights = new double *[gSize]; 
-
-	// for (int i = 0; i < gSize; i++)
-	// 	weights[i] = new double[gSize];
 
 	for (int i = 0; i < gSize; i++)
 	{
@@ -76,31 +66,15 @@ WeightedGraphType::WeightedGraphType(int size)
 			if (value == 0)
 			{
 				weight[i][j] = DBL_MAX;
-				//weights[i][j] = DBL_MAX; // system constant - maximum value of double
 			}
 			else
 			{
 				weight[i][j] = value;
-				//weights[i][j] = value;
-				//graph[i].push_back(j);
 				graphs[i].push_back(j);
 			}
 		}
 	}
 	infile.close();
-}
-
-WeightedGraphType::~WeightedGraphType()
-{
-	// for (int i = 0; i < gSize; i++)
-	// 	delete[] weights[i];
-
-	// delete[] weights;
-
-	// for (int index = 0; index < gSize; index++)
-	// 	graph[index].clear();
-
-	// delete[] graph;
 }
 
 void WeightedGraphType::printAdjacencyMatrix()
@@ -185,49 +159,4 @@ vector<vector<double> > WeightedGraphType::shortestPath(int vertex)
 	return retrace;
 } // end shortestPath
 
-/*
-list<int> WeightedGraphType::breadthFirstTraversal(int key)
-{
-	queue<int> queue;  // Used to order the exploration of the graph
-	list<int> indices; // Stores breadth first search result
-
-	bool *visited;
-	visited = new bool[gSize];
-
-	for (int ind = 0; ind < gSize; ind++)
-		visited[ind] = false; // creates an array sized of vertices
-							  // and initialises each to false
-
-	list<int>::iterator graphIt;
-
-	for (int index = key; index < gSize; index++)
-		if (!visited[index])
-		{						   // if it is false
-			queue.push(index);	   // push index into list
-			visited[index] = true; // change index to true
-			// cout << " " << index << " "; Prints out the first one being 0;
-
-			while (!queue.empty())
-			{
-				int u = queue.front();
-				indices.push_back(u);
-				queue.pop();
-
-				for (graphIt = graph[u].begin(); graphIt != graph[u].end();
-					 ++graphIt)
-				{
-					int w = *graphIt;
-					if (!visited[w])
-					{
-						queue.push(w);
-						visited[w] = true;
-						// cout << " " << w << " "; Print out the rest of the numbers if they have not been visited.
-					}
-				}
-			}
-		}
-	delete[] visited;
-	return indices;
-} // end breadthFirstTraversal
-*/
 #endif
