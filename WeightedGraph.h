@@ -20,18 +20,20 @@ class WeightedGraphType
 {
 protected:
 	int gSize;		  // number of vertices
-	list<int> *graph; // Store adjacency list
-	double **weights; // Store weights of edges
+	//list<int> *graph; // Store adjacency list
+	//double **weights; // Store weights of edges
+	vector<vector<double> > weight;
+	vector<vector<int> > graphs;
 public:
 	WeightedGraphType(int size = 0);
 	~WeightedGraphType();
 	double getWeight(int i, int j)
 	{
-		return weights[i][j];
+		return weight[i][j];
 	}
 	void printAdjacencyList();
 	void printAdjacencyMatrix();
-	list<int> breadthFirstTraversal(int key);
+	//list<int> breadthFirstTraversal(int key);
 	vector<vector<double> > shortestPath(int vertex);
 	double cheapestPath(int vertex, int destination);
 };
@@ -51,16 +53,19 @@ WeightedGraphType::WeightedGraphType(int size)
 	}
 
 	gSize = size;
+	graphs.resize(gSize);
+	weight.resize(gSize);
+	for(int i = 0; i < gSize; i++)
+	{
+		graphs[i].assign(gSize, 0);
+		weight[i].assign(gSize, 0);
+	}
+	//graph = new list<int>[gSize]; /*
 
-	graph = new list<int>[gSize]; /* The data type of graph would be list<int>, it would be a list of lists, the data to be stored
-   would be the depth of each column, in the weights.txt, so if it was 7 deep, in ascending order the input would be:
-	   0, 1, 2, 3, 4, 5, 6, 7*/
+	//weights = new double *[gSize]; 
 
-	weights = new double *[gSize]; /* This creates a 2d dynamic array of doubles, by using the key in the map
-	 it will identify which column belongs to the location, so weights[0][1], according to the weights.txt would be equal to 8.5*/
-
-	for (int i = 0; i < gSize; i++)
-		weights[i] = new double[gSize];
+	// for (int i = 0; i < gSize; i++)
+	// 	weights[i] = new double[gSize];
 
 	for (int i = 0; i < gSize; i++)
 	{
@@ -69,11 +74,16 @@ WeightedGraphType::WeightedGraphType(int size)
 			double value;
 			infile >> value;
 			if (value == 0)
-				weights[i][j] = DBL_MAX; // system constant - maximum value of double
+			{
+				weight[i][j] = DBL_MAX;
+				//weights[i][j] = DBL_MAX; // system constant - maximum value of double
+			}
 			else
 			{
-				weights[i][j] = value;
-				graph[i].push_back(j);
+				weight[i][j] = value;
+				//weights[i][j] = value;
+				//graph[i].push_back(j);
+				graphs[i].push_back(j);
 			}
 		}
 	}
@@ -82,15 +92,15 @@ WeightedGraphType::WeightedGraphType(int size)
 
 WeightedGraphType::~WeightedGraphType()
 {
-	for (int i = 0; i < gSize; i++)
-		delete[] weights[i];
+	// for (int i = 0; i < gSize; i++)
+	// 	delete[] weights[i];
 
-	delete[] weights;
+	// delete[] weights;
 
-	for (int index = 0; index < gSize; index++)
-		graph[index].clear();
+	// for (int index = 0; index < gSize; index++)
+	// 	graph[index].clear();
 
-	delete[] graph;
+	// delete[] graph;
 }
 
 void WeightedGraphType::printAdjacencyMatrix()
@@ -100,7 +110,7 @@ void WeightedGraphType::printAdjacencyMatrix()
 	{
 		for (int j = 0; j < gSize; j++)
 		{
-			cout << setw(8) << (weights[i][j] == DBL_MAX ? 0.0 : weights[i][j]); // as adjacency value, zero means no direct connection
+			cout << setw(8) << (weight[i][j] == DBL_MAX ? 0.0 : weight[i][j]); // as adjacency value, zero means no direct connection
 		}
 		cout << endl;
 	}
@@ -112,7 +122,7 @@ void WeightedGraphType::printAdjacencyList()
 	for (int index = 0; index < gSize; index++)
 	{
 		cout << index << ": ";
-		for (auto e : graph[index])
+		for (auto e : graphs[index])
 			cout << e << " ";
 		cout << endl;
 	}
@@ -128,8 +138,8 @@ vector<vector<double> > WeightedGraphType::shortestPath(int vertex)
 	{
 		retrace[0].push_back(0);
 		retrace[1].push_back(0);
-		smallestWeight[j] = weights[vertex][j];
-		if(weights[vertex][j] != DBL_MAX)
+		smallestWeight[j] = weight[vertex][j];
+		if(weight[vertex][j] != DBL_MAX)
 			retrace[1][j] = vertex+1;
 	}
 
@@ -159,9 +169,9 @@ vector<vector<double> > WeightedGraphType::shortestPath(int vertex)
 
 		for (int j = 0; j < gSize; j++)
 			if (!weightFound[j]) // If weight found is false
-				if (minWeight + weights[v][j] < smallestWeight[j])
+				if (minWeight + weight[v][j] < smallestWeight[j])
 				{
-					smallestWeight[j] = minWeight + weights[v][j];
+					smallestWeight[j] = minWeight + weight[v][j];
 					retrace[1][j] = v+1;
 				}
 
@@ -175,6 +185,7 @@ vector<vector<double> > WeightedGraphType::shortestPath(int vertex)
 	return retrace;
 } // end shortestPath
 
+/*
 list<int> WeightedGraphType::breadthFirstTraversal(int key)
 {
 	queue<int> queue;  // Used to order the exploration of the graph
@@ -218,5 +229,5 @@ list<int> WeightedGraphType::breadthFirstTraversal(int key)
 	delete[] visited;
 	return indices;
 } // end breadthFirstTraversal
-
+*/
 #endif

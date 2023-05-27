@@ -31,7 +31,6 @@ public:
 		else
 		   cout << setw(15) << "$" << setprecision(2) << chargingPrice << "/kWh" << endl;
 	}
-	
 };
 
 
