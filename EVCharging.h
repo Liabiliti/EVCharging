@@ -340,7 +340,7 @@ void EVCharging::cheapestLocation(string locationName)
 
 void EVCharging::cheapestPath(string locationName, string destinationName, int chargingAmount)
 {
-	vector<vector<double> > placeholder;
+	vector<vector<double> > placeholder, freeplaceholder, temp;
 	stack<int> stops;
 	srand(time(NULL));
 	int sourceIndex = 0, destinationIndex = 0, vertex = 0, cheapestStop = 0, stopNumber = 1;
@@ -358,41 +358,73 @@ void EVCharging::cheapestPath(string locationName, string destinationName, int c
 			destinationIndex = i;
 			break;
 		}
-	vertex = destinationIndex;
-	while (vertex != sourceIndex)
+	for(int i = 0; i < numberOfLocations; i++)
 	{
-		stops.push(vertex);
-		cost = ((placeholder[0][destinationIndex]) * 0.10) + (chargingAmount * locations[vertex].chargingPrice);
-		if (chargingAmount < 25)
+		if(locations[i].chargingPrice == 0 && chargingAmount < 25)
 		{
-			if (cheapest > cost && locations[vertex].chargingPrice >= 0)
+			temp = graph->shortestPath(i);
+			cost = ((((temp[0][destinationIndex] + placeholder[0][i]) * 0.10)));
+			if(cost < cheapest)
 			{
-				cheapestStop = vertex;
 				cheapest = cost;
+				cheapestStop = i;
+				freeplaceholder = temp;
 			}
 		}
-		else if (chargingAmount >= 25 && locations[vertex].chargingPrice > 0)
-		{
-			if (cheapest > cost)
+	}
+	vertex = destinationIndex;
+	if(chargingAmount >= 25)
+	{
+		while (vertex != sourceIndex)
 			{
-				cheapestStop = vertex;
-				cheapest = cost;
+				stops.push(vertex);
+				cost = ((placeholder[0][destinationIndex]) * 0.10) + (chargingAmount * locations[vertex].chargingPrice);
+				if (chargingAmount >= 25 && locations[vertex].chargingPrice > 0)
+				{
+					if (cheapest > cost)
+					{
+						cheapestStop = vertex;
+						cheapest = cost;
+					}
+				}
+				vertex = placeholder[1][vertex] - 1;
 			}
+	}
+	else
+	{
+		vertex = destinationIndex;
+		while(vertex != cheapestStop)
+		{
+			stops.push(vertex);
+			vertex = freeplaceholder[1][vertex] - 1;
 		}
-		vertex = placeholder[1][vertex] - 1;
+		while(vertex != sourceIndex)
+		{
+			stops.push(vertex);
+			vertex = placeholder[1][vertex] - 1;
+		}
+		
 	}
 	cout << "The charging amount " << chargingAmount << "kWh" << endl
 		 << "The cheapest other charging station is " << locations[cheapestStop].locationName << endl
-		 << "Charging cost = $" << (chargingAmount * locations[cheapestStop].chargingPrice) << endl
-		 << "Travel cost = $" << ((placeholder[0][destinationIndex]) * 0.10) << endl
-		 << "Total cost = $" << ((placeholder[0][destinationIndex]) * 0.10) + (chargingAmount * locations[cheapestStop].chargingPrice) << endl
-		 << "Travel path: " << locations[sourceIndex].locationName;
-
-	while (!stops.empty())
+		 << "Charging cost = $" << (chargingAmount * locations[cheapestStop].chargingPrice) << endl;
+	if(chargingAmount < 25)
 	{
-		cout << ", " << locations[stops.top()].locationName;
-		stops.pop();
+	 	cout << "Travel cost = $"<< ((freeplaceholder[0][destinationIndex] + placeholder[0][cheapestStop]) * 0.10) << endl
+			 << "Total cost = $" << ((freeplaceholder[0][destinationIndex] + placeholder[0][cheapestStop]) * 0.10) + (chargingAmount * locations[cheapestStop].chargingPrice) << endl;
 	}
+	else
+	{
+	 	cout << "Travel cost = $" << ((placeholder[0][destinationIndex]) * 0.10) << endl
+		 	 << "Total cost = $" << ((placeholder[0][destinationIndex]) * 0.10) + (chargingAmount * locations[cheapestStop].chargingPrice) << endl;
+	}
+	cout << "Travel path: " << locations[sourceIndex].locationName;
+
+		while (!stops.empty())
+		{
+			cout << ", " << locations[stops.top()].locationName;
+			stops.pop();
+		}
 	cout << endl;
 }
 
@@ -400,7 +432,7 @@ void EVCharging::cheapestPathFree(string locationName, string destinationName, i
 {
 	int sourceIndex, destinationIndex;
 	vector<int> bestPath;
-	for (int i = 0; i < numberOfLocations; i++) // Finds locaiton input
+	for (int i = 0; i < numberOfLocations; i++) // Finds location input
 		if (locations[i].locationName == locationName)
 		{
 			sourceIndex = i;
@@ -418,31 +450,32 @@ void EVCharging::cheapestPathFree(string locationName, string destinationName, i
 
 vector<int> EVCharging::findAllPaths(int start, int end, int chargingAmount)
 {
-	vector<int> cheapestPath;
-	double cheapestCost = 10000;
-	vector<int> initialPath;
-	stack<pair<int, vector<int> > > pathStack;
-	initialPath.push_back(start);
-	pathStack.push(make_pair(start, initialPath));
-
+	vector<int> cheapestPath; //1
+	double cheapestCost = 10000; //1
+	vector<int> initialPath; //1
+	stack<pair<int, vector<int> > > pathStack; //1
+	initialPath.push_back(start); // 1
+	pathStack.push(make_pair(start, initialPath));// 1
+	int tracker;
 	while (!pathStack.empty())
 	{
+		tracker++;
 		auto current = pathStack.top();
 		pathStack.pop();
 		int currentVertex = current.first;
 		vector<int> currentPath = current.second;
-		if (currentVertex == end && !currentPath.empty())
+		if (currentVertex == end && !currentPath.empty()) // O(1)
 		{
 			if (currentPath[currentPath.size() - 1] == end && currentPath[0] == start)
-				if (costOfPath(currentPath, chargingAmount, 0) < cheapestCost)
+				if (costOfPath(currentPath, chargingAmount, 0) < cheapestCost) // O(n)
 				{
-					cheapestCost = costOfPath(currentPath, chargingAmount, 0);
+					cheapestCost = costOfPath(currentPath, chargingAmount, 0); // O(n)
 					cheapestPath = currentPath;
 				}
 		}
 		else
 		{
-			for (int i : getNeighbours(currentVertex))
+			for (int i : getNeighbours(currentVertex)) // O(n)
 			{
 				if (!exists(i, currentPath))
 				{

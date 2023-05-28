@@ -133,26 +133,6 @@ int main()
 				cout << "Not an option";
 		}
 	}
-	// cout << "Testing\n";
-	// string sources[] = {"Emu Plains", "Penrith", "Mascot", "Manly", "Springwood"};
-	// string destinations[] = {"Campbelltown", "North Ryde", "Penrith", "Richmond", "Hurstville"};
-	// int chargeAmounts[] = {32, 44, 10, 51, 20};
-	// for(int i = 0; i < 5; i++)
-	// {
-	// 	if (charging.cityExists(sources[i]) && charging.cityExists(destinations[i]))
-	// 	{
-	// 		charging.addLocation(sources[i])
-	// 		//charging.adjacentLocations(sources[i]);
-	// 		//charging.cheapestAdjacentCity(sources[i]);
-	// 		//charging.closestCity(sources[i]);
-	// 		//charging.cheapestLocation(sources[i]); 
-	// 		//charging.cheapestPath(sources[i], destinations[i], chargeAmounts[i]);
-	// 		charging.cheapestPathFree(sources[i], destinations[i], chargeAmounts[i]);
-	// 	}
-	// 	else
-	// 		cout << "Didn't exist";
-	// 	cout << endl;
-	// }
 
 
 	return 0;
