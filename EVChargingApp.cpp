@@ -6,7 +6,6 @@
 #include <iomanip>
 #include <unordered_set>
 #include <limits>
-#include <unistd.h>
 
 using namespace std;
 
@@ -20,6 +19,7 @@ int main()
 	string city, destinationCity;
 	int task, chargingAmount;
 	double weight, chargingCost;
+
 	while(1)
 	{
 		cout << "\nChoose a task to run:\n"
