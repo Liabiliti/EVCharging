@@ -133,10 +133,6 @@ int main()
 				cout << "Not an option";
 		}
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> 85b54a946bd08217a9c536fe3c30ba4eaf0ddf53
 
 	return 0;
 }
