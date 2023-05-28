@@ -33,13 +33,16 @@ public:
 		gSize++;
 		weight.resize(gSize);
 		graphs.resize(gSize);
-
-		for(int i = 0; i < gSize; i++)
-			weight[i].resize(gSize);
-			weight[i][gSize - 1] = 0;
-
-		graphs[gSize - 1].resize(gSize);
-		graphs[gSize - 1][i] = j;
+		for(int g = 0; g < gSize; g++)
+		{
+			weight[g].resize(gSize);
+			weight[g][gSize-1] = DBL_MAX;
+		}
+		for(int g = 0; g < gSize; g++)
+		{
+			weight[gSize-1][g] = DBL_MAX;
+		}
+		
 		weight[i][j] = w;
 		weight[j][i] = w;
 	}
@@ -49,8 +52,8 @@ public:
 		{
 			if(weight[i][j] != DBL_MAX)
 			{
-				weight[i][j] = 0;
-				weight[j][i] = 0;
+				weight[i][j] = DBL_MAX;
+				weight[j][i] = DBL_MAX;
 			}
 		}	
 		for(int removed = i; removed < gSize -1; removed++)

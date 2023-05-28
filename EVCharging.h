@@ -70,12 +70,12 @@ void EVCharging::addLocation(string locationName, string neighbour, double weigh
 	}
 	s.index = numberOfLocations;
 	s.locationName = locationName;
+	locationList.insert(s.locationName);
 	for(int i = 0; i < numberOfLocations; i++)
 		if (locations[i].locationName == neighbour)
 			index = i;
 	
 	locations[numberOfLocations] = s;
-	//graph->deleteWeight(1);
 	graph->addWeight(numberOfLocations, index, weight);
 	numberOfLocations++;
 }
@@ -175,21 +175,17 @@ void EVCharging::adjacentLocations(string location)
 {
 	int adjCityCharging = 0;
 	int index;
+	double weight;
 	for (int i = 0; i < numberOfLocations; i++)
 		if (locations[i].locationName == location)
 		{
 			index = i;
 			break;
 		}
-
-	if (index == numberOfLocations)
-	{
-		cout << "Not available on the map";
-		return;
-	}
 	cout << "Adjacent cities to " << location << " with charging stations: " << endl;
 	for (int j = 0; j < numberOfLocations; j++)
 	{
+		weight = graph->getWeight(index, j);
 		if ((graph->getWeight(index, j) != DBL_MAX) && (locations[j].chargerInstalled != 0))
 		{
 			cout << locations[j].locationName << endl;
@@ -367,19 +363,25 @@ void EVCharging::cheapestPath(string locationName, string destinationName, int c
 	{
 		stops.push(vertex);
 		cost = ((placeholder[0][destinationIndex]) * 0.10) + (chargingAmount * locations[vertex].chargingPrice);
-		if (chargingAmount <= 25)
+		if (chargingAmount < 25)
 		{
-			if (cheapest > cost)
+			if (cheapest > cost && locations[vertex].chargingPrice >= 0)
+			{
 				cheapestStop = vertex;
+				cheapest = cost;
+			}
 		}
-		else if (chargingAmount > 25 && locations[vertex].chargingPrice > 0)
+		else if (chargingAmount >= 25 && locations[vertex].chargingPrice > 0)
 		{
 			if (cheapest > cost)
+			{
 				cheapestStop = vertex;
+				cheapest = cost;
+			}
 		}
 		vertex = placeholder[1][vertex] - 1;
 	}
-	cout << "The charging amount " << chargingAmount << endl
+	cout << "The charging amount " << chargingAmount << "kWh" << endl
 		 << "The cheapest other charging station is " << locations[cheapestStop].locationName << endl
 		 << "Charging cost = $" << (chargingAmount * locations[cheapestStop].chargingPrice) << endl
 		 << "Travel cost = $" << ((placeholder[0][destinationIndex]) * 0.10) << endl
@@ -391,6 +393,7 @@ void EVCharging::cheapestPath(string locationName, string destinationName, int c
 		cout << ", " << locations[stops.top()].locationName;
 		stops.pop();
 	}
+	cout << endl;
 }
 
 void EVCharging::cheapestPathFree(string locationName, string destinationName, int chargingAmount)
@@ -462,10 +465,6 @@ double EVCharging::costOfPath(vector<int> path, int chargingAmount, int flag)
 		{
 			if (locations[path[j]].chargingPrice == 0)
 			{
-				if (flag == 1)
-				{
-					cout << locations[path[j]].locationName << endl;
-				}
 				chargingLeft -= 25;
 			}
 			else if (locations[path[j]].chargingPrice < cheapest)
@@ -488,6 +487,7 @@ double EVCharging::costOfPath(vector<int> path, int chargingAmount, int flag)
 		{
 			cout << ", " << locations[path[i]].locationName;
 		}
+		cout << endl;
 	}
 	return (distance * 0.10) + (chargingLeft * cheapest);
 }
