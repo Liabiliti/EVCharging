@@ -18,6 +18,7 @@ int main()
 	EVCharging charging;
 	string city, destinationCity;
 	int task, chargingAmount;
+	/*
 	cout << "Choose a task to run:\n"
 		 << "1. Print location information\n"
 		 << "2. Print adjacency matrix\n"
@@ -105,5 +106,11 @@ int main()
 			cout << "Not an option";
 			exit(1);
 	}
+	*/
+	charging.addLocation("Emu Plains", "Penrith", 33.3, 0.35);
+	charging.deleteLocation("St Mary");
+	charging.deleteLocation("Box Hill");
+	//charging.printLocations();
+	charging.printAdjacencyMatrix();
 	return 0;
 }

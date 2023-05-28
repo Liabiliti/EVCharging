@@ -28,6 +28,49 @@ public:
 	{
 		return weight[i][j];
 	}
+	void addWeight(int i, int j, double w)
+	{
+		gSize++;
+		weight.resize(gSize);
+		graphs.resize(gSize);
+
+		for(int i = 0; i < gSize; i++)
+			weight[i].resize(gSize);
+			weight[i][gSize - 1] = 0;
+
+		graphs[gSize - 1].resize(gSize);
+		graphs[gSize - 1][i] = j;
+		weight[i][j] = w;
+		weight[j][i] = w;
+	}
+	void deleteWeight(int i)
+	{
+		for(int j = 0; j < gSize; j++)
+		{
+			if(weight[i][j] != DBL_MAX)
+			{
+				weight[i][j] = 0;
+				weight[j][i] = 0;
+			}
+		}	
+		for(int removed = i; removed < gSize -1; removed++)
+		{
+			for(int row = 0; row < gSize; row++)
+			{
+				weight[row][removed] = weight[row][removed+1];
+
+			}
+			for(int row = 0; row < gSize; row++)
+			{
+				weight[removed][row] = weight[removed+1][row];
+
+			}
+		}
+		//weight.pop_back();
+		gSize--;
+		//weight.erase(weight.begin() + i);
+	}
+
 	void printAdjacencyList();
 	void printAdjacencyMatrix();
 	vector<vector<double> > shortestPath(int vertex);
@@ -70,7 +113,7 @@ WeightedGraphType::WeightedGraphType(int size)
 			else
 			{
 				weight[i][j] = value;
-				graphs[i].push_back(j);
+				graphs[i][j] = j;
 			}
 		}
 	}

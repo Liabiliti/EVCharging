@@ -38,6 +38,9 @@ public:
 	list<int> getNeighbours(int vertex);
 	bool exists(int vertex, vector<int> path);
 	double costOfPath(vector<int> path, int chargingAmount, int flag);
+	// Task 10
+	void addLocation(string locationName, string neighbour, double weight, double price);
+	void deleteLocation(string locationName);
 };
 
 bool EVCharging::cityExists(string location)
@@ -49,6 +52,46 @@ EVCharging::EVCharging()
 {
 	inputLocations();
 	graph = new WeightedGraphType(numberOfLocations);
+}
+
+void EVCharging::addLocation(string locationName, string neighbour, double weight, double price)
+{
+	Location s;
+	int index;
+	if(price == -1)
+	{
+		s.chargerInstalled = 0;
+		s.chargingPrice = -1;
+	}
+	else
+	{
+		s.chargerInstalled = 1;
+		s.chargingPrice = price;
+	}
+	s.index = numberOfLocations;
+	s.locationName = locationName;
+	for(int i = 0; i < numberOfLocations; i++)
+		if (locations[i].locationName == neighbour)
+			index = i;
+	
+	locations[numberOfLocations] = s;
+	//graph->deleteWeight(1);
+	graph->addWeight(numberOfLocations, index, weight);
+	numberOfLocations++;
+}
+
+void EVCharging::deleteLocation(string locationName)
+{
+	int index;
+	for(int i = 0; i < numberOfLocations; i++)
+		if (locations[i].locationName == locationName)
+			index = i;
+	graph->deleteWeight(index);
+	for(int removed = index; removed < numberOfLocations - 1; removed++)
+	{
+		locations[removed] = locations[removed+1];
+	}
+	numberOfLocations--;
 }
 
 EVCharging::~EVCharging()
